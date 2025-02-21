@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { current } from '../libs/axios/weather'
+import { current, forecast } from '../libs/axios/weather'
 
 export function Modal({ closeModal }) {
 
   return (
 
     <section className="w-screen h-screen max-h-screen bg-[#1E213A] absolute top-0 left-0 md:w-[30vw] md:min-w-[380px]" style={{ zIndex: 99 }}>
-      {/*  */}
       <nav className="w-full h-24 flex items-end justify-around">
         <span onClick={closeModal} className="absolute right-10 top-6 cursor-pointer">
           <img width="25" className=" hover:w-7 hover:h-7" src="./weatherapp/close.svg" alt="close icon" />
@@ -34,9 +33,10 @@ export function Modal({ closeModal }) {
 
 
 export function Fondo() {
+  const[forecastData, setForecastData] = useState([])
   useEffect(() => {
-    current()
-      .then((rs) => console.log(rs))
+    forecast()
+      .then((rs) => setForecastData(rs.data))
       .catch(error =>
         console.log(error))
   }, [])
