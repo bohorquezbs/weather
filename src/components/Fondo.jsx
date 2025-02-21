@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { current, forecast } from '../libs/axios/weather'
+import { current } from '../libs/axios/weather'
 
 export function Modal({ closeModal }) {
 
@@ -33,20 +33,21 @@ export function Modal({ closeModal }) {
 
 
 export function Fondo() {
-  const[forecastData, setForecastData] = useState([])
+  
   useEffect(() => {
-    forecast()
-      .then((rs) => setForecastData(rs.data))
+    current()
+      .then((rs) => console.log(rs))
       .catch(error =>
         console.log(error))
   }, [])
+  
+  
   const [isOpen, SetIsOpen] = useState(false);
   const openModal = () => { SetIsOpen(true) }
   const closeModal = () => { SetIsOpen(false) }
   return (
     <>
       <aside className="w-screen lg:w-[35%] h-screen bg-[#1e213a] flex flex-col items-center">
-
         <header className=" flex justify-a items-end h-16 gap-x-10">
           <input onClick={openModal} className=" w-44 h-9 bg-[#6E707A] text-[#E7E7EB] cursor-pointer text-center right-4" type="button" value="Search for Places" />
           <div className=" flex items-center justify-center w-10 h-10 bg-[#ffffff33] rounded-full cursor-pointer">

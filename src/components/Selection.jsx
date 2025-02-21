@@ -1,6 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { forecast } from '../libs/axios/weather'
 
-export default function Selection() {
+export default function Selection(direccion) {
+    const [forecastData, setForecastData] = useState([])
+    useEffect(() => {
+        forecast()
+          .then((rs) => setForecastData(rs.data))
+          .catch(error =>
+            console.log(error))
+      }, [])
     return (
         <div className="w-screen lg:w-[65%] h-full bg-slate-950 flex flex-col items-center">
             <header className="w-[70%] h-16  text-white flex justify-end mt-5">
