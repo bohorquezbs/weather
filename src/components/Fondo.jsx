@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { current } from '../libs/axios/weather'
+import { current, forecast } from '../libs/axios/weather'
 
 export function Modal({ closeModal }) {
 
@@ -33,13 +33,36 @@ export function Modal({ closeModal }) {
 
 
 export function Fondo({ celcius, fahrenheit }) {
-const [currentWeather, setCurrentWeather] = useState(null)
+  const [forecastData, setForecastData] = useState([])
+  const [currentWeather, setCurrentWeather] = useState([])
+  const [geo, setGeo] = useState({ lat: -2.1340, lon: -79.5934 })
   useEffect(() => {
-    current()
-      .then((data) => setTemp(data.rs))
+    current(geo.lat, geo.lon)
+      .then((data) => setCurrentWeather(data.rs))
       .catch(error =>
         console.log(error))
-  }, [])
+
+    forecast(geo.lat, geo.lon)
+      .then((data) => setForecastData(data.rs))
+      .catch(error =>
+        console.log(error))
+  }, [geo])
+  console.log(forecastData)
+  function success(position) {
+    setGeo({ lat: position.coords.latitude, lon: position.coords.longitude });
+  }
+
+  function error() {
+    alert("Sorry, no position available.");
+  }
+
+  const options = {
+    enableHighAccuracy: true,
+    maximumAge: 30000,
+    timeout: 27000,
+  };
+
+  
 
 
   const [isOpen, SetIsOpen] = useState(false);
@@ -52,7 +75,7 @@ const [currentWeather, setCurrentWeather] = useState(null)
         <header className=" flex justify-a items-end h-16 gap-x-10">
           <input onClick={openModal} className=" w-44 h-9 bg-[#6E707A] text-[#E7E7EB] cursor-pointer text-center right-4" type="button" value="Search for Places" />
           <div className=" flex items-center justify-center w-10 h-10 bg-[#ffffff33] rounded-full cursor-pointer">
-            <img src="./weatherapp/location.svg" alt="location icon" width={25} />
+            <img src="./weatherapp/location.svg" alt="location icon" width={25} onClick={()=>navigator.geolocation.watchPosition(success, error, options)}/>
           </div>
         </header>
         {isOpen && <Modal closeModal={closeModal} />}
@@ -63,14 +86,14 @@ const [currentWeather, setCurrentWeather] = useState(null)
             <h2 className="text-white font-medium text-6xl text-center mt-1 ">{(forecast?.main.temp - 273.15).toFixed(0)}{temp}&deg;C</h2>
           }
           {fahrenheit &&
-            <h2 className="text-white font-medium text-6xl text-center mt-1 ">{((forecast?.main.temp - 273.15)* 9 / 5 + 32).toFixed(0)}{temp}&deg;F</h2>
+            <h2 className="text-white font-medium text-6xl text-center mt-1 ">{((forecast?.main.temp - 273.15) * 9 / 5 + 32).toFixed(0)}{temp}&deg;F</h2>
           }
-      
+
           <h2 className='text-2xl text-[#a09fb1] font-bold text-center mt-4 '>clear sky</h2>
           <h2 className='text-md text-[#818683]  text-center mt-4'>Today , mon feb 17 2025</h2>
           <div className='text-md text-[#818683] font-bold text-center mt-2 gap-x-2 flex items-center justify-center'>
             <img className="w-6 h-6" src="/weatherapp/location_on.svg" alt="" />
-            <h2 className=''>Milagro</h2>
+            <h2 className=''>{currentWeather?.name}Milagro</h2>
           </div>
         </section>
       </aside >
