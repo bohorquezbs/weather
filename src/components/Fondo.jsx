@@ -32,19 +32,20 @@ export function Modal({ closeModal }) {
 }
 
 
-export function Fondo() {
-  
+export function Fondo({ celcius, fahrenheit }) {
+const [currentWeather, setCurrentWeather] = useState(null)
   useEffect(() => {
     current()
-      .then((rs) => console.log(rs))
+      .then((data) => setTemp(data.rs))
       .catch(error =>
         console.log(error))
   }, [])
-  
-  
+
+
   const [isOpen, SetIsOpen] = useState(false);
   const openModal = () => { SetIsOpen(true) }
   const closeModal = () => { SetIsOpen(false) }
+  const [temp, setTemp] = useState(null)
   return (
     <>
       <aside className="w-screen lg:w-[35%] h-screen bg-[#1e213a] flex flex-col items-center">
@@ -58,7 +59,13 @@ export function Fondo() {
         <section className="w-full h-3/5 relative flex flex-col justify-center items-center">
           <div className="w-[120%] h-4/5 mt-2 opacity-40 absolute bottom-24 right-0 bg-[url('/weatherapp/others/Cloud-background.png')]"></div>
           <img className=" flex  h-60 w-52 mt-45 mb-24" src='./weatherapp/weather/10d.png' alt="" />
-          <h2 className="text-white font-medium text-6xl text-center mt-1 ">25<span className='text-6xl'> °C </span></h2>
+          {celcius &&
+            <h2 className="text-white font-medium text-6xl text-center mt-1 ">{(forecast?.main.temp - 273.15).toFixed(0)}{temp}&deg;C</h2>
+          }
+          {fahrenheit &&
+            <h2 className="text-white font-medium text-6xl text-center mt-1 ">{((forecast?.main.temp - 273.15)* 9 / 5 + 32).toFixed(0)}{temp}&deg;F</h2>
+          }
+      
           <h2 className='text-2xl text-[#a09fb1] font-bold text-center mt-4 '>clear sky</h2>
           <h2 className='text-md text-[#818683]  text-center mt-4'>Today , mon feb 17 2025</h2>
           <div className='text-md text-[#818683] font-bold text-center mt-2 gap-x-2 flex items-center justify-center'>
